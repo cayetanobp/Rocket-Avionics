@@ -1,6 +1,6 @@
 # Módulo 01: Power Management - Gestión de Energía
 
-> **Estado**: 🔴 No iniciado  
+> **Estado**: 🟡 En desarrollo
 > **Prioridad**: Fase 2 - Primer módulo a desarrollar  
 > **Dependencias**: Ninguna (módulo base)  
 > **Dependientes**: Todos los demás módulos
