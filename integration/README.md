@@ -20,7 +20,7 @@ integration/
 
 ```
                     ┌─────────────────────────────┐
-                    │       STM32F407VGT6          │
+                    │       STM32F401VET6          │
                     │                               │
     I2C1 (400kHz)   │  PB6 (SCL) ──────┬──────────│──→ MPU6050 (0x68)
                     │  PB7 (SDA) ──────┤          │──→ BMP280  (0x76)
@@ -77,7 +77,7 @@ integration/
 File → New Project → "RocketAvionics_FullSystem"
 ├── Schematic: Default
 ├── PCB Layout: None (por ahora)
-└── Firmware: STM32F407VGT6
+└── Firmware: STM32F401VET6
 ```
 
 **Paso 2: Colocar Componentes por Subsistema**
@@ -85,7 +85,7 @@ Organizar el esquemático en bloques visuales:
 ```
 ┌─────────────┐ ┌──────────────┐ ┌──────────────┐
 │   POWER     │ │   MCU CORE   │ │   SENSORS    │
-│ LiPo→Buck   │ │ STM32F407    │ │ I2C Scanner  │
+│ LiPo→Buck   │ │ STM32F401    │ │ I2C Scanner  │
 │ →LDO→INA219│ │ HSE 8MHz     │ │ Bus Manager  │
 └─────────────┘ └──────────────┘ └──────────────┘
 

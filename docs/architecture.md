@@ -2,23 +2,24 @@
 
 ## Visión General
 
-El sistema de aviónica se estructura como una arquitectura centralizada con MCU único (STM32F407) ejecutando FreeRTOS. Todos los subsistemas se conectan al MCU mediante buses estándar (I2C, SPI, UART) y se abstraen en tareas RTOS independientes.
+El sistema de aviónica se estructura como una arquitectura centralizada con MCU único (STM32F401VE) ejecutando FreeRTOS. Todos los subsistemas se conectan al MCU mediante buses estándar (I2C, SPI, UART) y se abstraen en tareas RTOS independientes.
 
 ---
 
 ## Decisiones Arquitectónicas
 
 ### ¿Por qué MCU único vs. múltiples MCUs?
-- **Elegido**: MCU único STM32F407
+- **Elegido**: MCU único STM32F401VE
 - **Razón**: Simplifica la comunicación inter-módulos, reduce peso, elimina problemas de sincronización entre MCUs
 - **Trade-off**: Mayor complejidad del firmware, punto único de fallo (mitigado con watchdog)
 - **Alternativa descartada**: Arquitectura distribuida con CAN bus - excesiva para cohete amateur
 
-### ¿Por qué STM32F407?
-- ARM Cortex-M4 a 168 MHz - potencia suficiente para fusión de sensores + PID a 100Hz
+### ¿Por qué STM32F401VE?
+- ARM Cortex-M4 a 84 MHz - potencia suficiente para fusión de sensores + PID a 100Hz
 - FPU hardware - cálculos de filtro Madgwick/Kalman sin penalización
-- Periféricos abundantes: 3x I2C, 3x SPI, 6x UART, 16x ADC, 12x PWM
-- **Soporte VSM en Proteus** - requisito crítico para simulación
+- Periféricos suficientes: 3x I2C, 4x SPI, 3x USART, 12x ADC, 12x PWM
+- **Modelo VSM disponible en Proteus** (STM32F401VE) - requisito crítico para simulación
+- Variante VE: LQFP100, 512 KB Flash, 96 KB SRAM
 - Ecosistema maduro: HAL, CubeMX, FreeRTOS port oficial
 
 ### ¿Por qué FreeRTOS y no bare-metal?
@@ -33,7 +34,7 @@ El sistema de aviónica se estructura como una arquitectura centralizada con MCU
 ## Mapa de Periféricos del MCU
 
 ```
-STM32F407VGT6
+STM32F401VET6
 ├── I2C1 (PB6=SCL, PB7=SDA) ── 400kHz
 │   ├── MPU6050  (addr: 0x68)  ── IMU
 │   ├── BMP280   (addr: 0x76)  ── Barómetro
@@ -163,7 +164,7 @@ LiPo 3S (11.1V nominal, 9.0-12.6V)
     │       └── Reserva para actuadores
     │
     └──▶ LDO 3.3V (500mA)
-            ├── STM32F407 (~100mA)
+            ├── STM32F401 (~50mA)
             ├── MPU6050 (~3.6mA)
             ├── BMP280 (~0.7mA)
             ├── NEO-6M (~45mA)
@@ -179,11 +180,11 @@ LiPo 3S (11.1V nominal, 9.0-12.6V)
 
 | Fase               | Corriente 3.3V | Corriente 5V | Total    |
 |--------------------|-----------------|---------------|----------|
-| PAD_IDLE           | ~200 mA         | ~50 mA        | ~250 mA  |
-| ARMED              | ~250 mA         | ~50 mA        | ~300 mA  |
-| BOOST/COAST        | ~300 mA         | ~500 mA       | ~800 mA  |
-| DESCENT            | ~280 mA         | ~100 mA       | ~380 mA  |
-| LANDED/RECOVERY    | ~250 mA         | ~50 mA        | ~300 mA  |
+| PAD_IDLE           | ~150 mA         | ~50 mA        | ~200 mA  |
+| ARMED              | ~200 mA         | ~50 mA        | ~250 mA  |
+| BOOST/COAST        | ~250 mA         | ~500 mA       | ~750 mA  |
+| DESCENT            | ~230 mA         | ~100 mA       | ~330 mA  |
+| LANDED/RECOVERY    | ~200 mA         | ~50 mA        | ~250 mA  |
 
 ---
 
@@ -265,15 +266,15 @@ LiPo 3S (11.1V nominal, 9.0-12.6V)
 
 ```
 Lectura I2C IMU:        ~1.5 ms (14 bytes @ 400kHz + overhead)
-Filtro Madgwick:        ~0.3 ms (con FPU)
+Filtro Madgwick:        ~0.6 ms (con FPU a 84 MHz)
 Lectura I2C BMP280:     ~1.0 ms (6 bytes @ 400kHz)
-Cálculo de altitud:     ~0.1 ms
-State Machine eval:     ~0.2 ms
+Cálculo de altitud:     ~0.2 ms
+State Machine eval:     ~0.4 ms
 Flash SPI write:        ~0.5 ms (page write, non-blocking con DMA ideal)
 LoRa packet TX:         ~5.0 ms (pero solo cada 100ms)
-Context switch RTOS:    ~0.01 ms per switch
-────────────────────────────────────
-Total (sin LoRa):       ~3.6 ms → Margen: 6.4 ms (64% libre)
+Context switch RTOS:    ~0.02 ms per switch
+───────────────────────────────────────
+Total (sin LoRa):       ~4.2 ms → Margen: 5.8 ms (58% libre)
 ```
 
 ---

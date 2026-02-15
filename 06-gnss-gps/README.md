@@ -49,7 +49,7 @@ Receptor GPS NEO-6M para posicionamiento geográfico del cohete. Aunque **no es 
 
 ```
 ┌────────────────────────┐         ┌──────────────────────┐
-│  Arduino/STM32 auxiliar │  UART   │   STM32F407          │
+│  Arduino/STM32 auxiliar │  UART   │   STM32F401          │
 │  "GPS Simulator"        │────────▶│   Flight Computer    │
 │                          │         │                      │
 │  Genera tramas NMEA      │         │  Parsea NMEA como    │

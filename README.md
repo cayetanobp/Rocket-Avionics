@@ -39,7 +39,7 @@
 
 ```
                         ┌─────────────────────────┐
-                        │    POWER MANAGEMENT      │
+                        │    POWER MANAGEMENT     │
                         │   LiPo 3S → 5V / 3.3V   │
                         └────────────┬────────────┘
                                      │
@@ -258,7 +258,7 @@ rocket-avionics/
 
 | Categoría          | Tecnología                              |
 |--------------------|-----------------------------------------|
-| MCU                | STM32F407VGT6 (ARM Cortex-M4, 168 MHz) |
+| MCU                | STM32F401VET6 (ARM Cortex-M4, 84 MHz)  |
 | RTOS               | FreeRTOS v10.x                          |
 | IMU                | MPU6050 (6-DOF)                         |
 | Barómetro          | BMP280                                  |

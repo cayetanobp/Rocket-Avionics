@@ -9,7 +9,7 @@
 
 ## Resumen
 
-Cerebro del sistema de aviónica. El STM32F407VGT6 ejecuta FreeRTOS y coordina la lectura de sensores, ejecución de la máquina de estados, logging, telemetría y control de recuperación. Este módulo establece la base sobre la cual se construyen todos los demás.
+Cerebro del sistema de aviónica. El STM32F401VET6 ejecuta FreeRTOS y coordina la lectura de sensores, ejecución de la máquina de estados, logging, telemetría y control de recuperación. Este módulo establece la base sobre la cual se construyen todos los demás.
 
 ---
 
@@ -18,11 +18,11 @@ Cerebro del sistema de aviónica. El STM32F407VGT6 ejecuta FreeRTOS y coordina l
 ### Microcontrolador
 | Parámetro          | Valor                           |
 |--------------------|---------------------------------|
-| MCU                | STM32F407VGT6                   |
+| MCU                | STM32F401VET6                   |
 | Core               | ARM Cortex-M4 con FPU           |
-| Frecuencia         | 168 MHz                         |
-| Flash              | 1 MB                            |
-| SRAM               | 192 KB                          |
+| Frecuencia         | 84 MHz                          |
+| Flash              | 512 KB                          |
+| SRAM               | 96 KB                           |
 | Package            | LQFP100                         |
 | Voltaje operación  | 1.8V - 3.6V                     |
 | Modelo Proteus     | ✅ VSM disponible               |
@@ -31,7 +31,7 @@ Cerebro del sistema de aviónica. El STM32F407VGT6 ejecuta FreeRTOS y coordina l
 | Parámetro          | Valor                           |
 |--------------------|---------------------------------|
 | HSE (externo)      | 8 MHz cristal                   |
-| PLL configuración  | 8 MHz → 168 MHz                 |
+| PLL configuración  | 8 MHz → 84 MHz                  |
 | LSE (RTC)          | 32.768 kHz (opcional)           |
 
 ### FreeRTOS
@@ -40,7 +40,7 @@ Cerebro del sistema de aviónica. El STM32F407VGT6 ejecuta FreeRTOS y coordina l
 | Versión            | v10.4.x (CMSIS-RTOS v2 wrapper) |
 | Tick rate          | 1000 Hz (1ms tick)              |
 | Heap scheme        | heap_4 (coalescente)            |
-| Heap size          | 32 KB                           |
+| Heap size          | 24 KB                           |
 | Max priorities     | 7                               |
 | Stack overflow     | Check method 2 (pattern fill)   |
 | Timer task         | Habilitado                      |
@@ -49,12 +49,13 @@ Cerebro del sistema de aviónica. El STM32F407VGT6 ejecuta FreeRTOS y coordina l
 
 ## Decisiones Técnicas
 
-### ¿Por qué STM32F407 y no STM32F103?
-- F407 tiene **FPU hardware**: filtro Madgwick/Kalman ~10× más rápido que F103
-- 168 MHz vs 72 MHz: margen de procesamiento para todas las tareas a 100Hz
-- 192 KB SRAM vs 20 KB: espacio para buffers de logging y stacks de 8 tareas RTOS
-- Más periféricos (3xI2C, 3xSPI, 6xUART) para no compartir buses
-- **Ambos tienen modelo VSM en Proteus** - F407 es la elección superior
+### ¿Por qué STM32F401VE y no STM32F103?
+- F401 tiene **FPU hardware**: filtro Madgwick/Kalman ~10× más rápido que F103
+- 84 MHz vs 72 MHz: margen de procesamiento para todas las tareas a 100Hz
+- 96 KB SRAM vs 20 KB: espacio para buffers de logging y stacks de 8 tareas RTOS
+- Periféricos suficientes (3xI2C, 4xSPI, 3xUSART) para cubrir todos los buses
+- **Modelo VSM disponible en Proteus** - requisito fundamental para simulación
+- Variante VE (LQFP100, 512KB Flash, 96KB SRAM) — máxima capacidad dentro de la familia F401
 
 ### ¿Por qué FreeRTOS y no bare-metal con timer interrupts?
 - **Bare-metal**: Más simple para 2-3 tareas, pero escala mal a 8+ tareas
@@ -80,24 +81,25 @@ Cerebro del sistema de aviónica. El STM32F407VGT6 ejecuta FreeRTOS y coordina l
 ## Configuración de Clocks
 
 ```
-HSE (8 MHz) ──▶ PLL ──▶ SYSCLK = 168 MHz
+HSE (8 MHz) ──▶ PLL ──▶ SYSCLK = 84 MHz
                            │
-                           ├── AHB = 168 MHz (HCLK)
-                           │     ├── Cortex System Timer (SysTick) = 168 MHz
+                           ├── AHB = 84 MHz (HCLK)
+                           │     ├── Cortex System Timer (SysTick) = 84 MHz
                            │     ├── AHB1: GPIO, DMA
                            │     └── AHB2: USB (no usado)
                            │
                            ├── APB1 = 42 MHz (máx)
                            │     ├── I2C1 (sensores)
-                           │     ├── UART2 (debug)
-                           │     ├── TIM2-7 (PWM servos, timing)
+                           │     ├── USART2 (debug)
+                           │     ├── TIM2-5 (PWM servos, timing)
                            │     └── IWDG, WWDG
                            │
                            └── APB2 = 84 MHz (máx)
                                  ├── SPI1 (Flash, LoRa)
-                                 ├── UART1 (GPS)
+                                 ├── USART1 (GPS)
+                                 ├── USART6 (reserva)
                                  ├── ADC1
-                                 └── TIM1, TIM8
+                                 └── TIM1, TIM9-11
 ```
 
 ---
@@ -108,7 +110,7 @@ HSE (8 MHz) ──▶ PLL ──▶ SYSCLK = 168 MHz
 
 ```
                               ┌─────────────────────┐
-    3.3V ───────────────────▶│    STM32F407VGT6     │
+    3.3V ───────────────────▶│    STM32F401VET6     │
                               │                     │
     8MHz XTAL ──┬── OSC_IN   │  PB6/PB7 ── I2C1    │── SDA/SCL → Sensores
                 └── OSC_OUT  │  PA5-7   ── SPI1    │── SCK/MISO/MOSI → Flash/LoRa
@@ -130,7 +132,7 @@ HSE (8 MHz) ──▶ PLL ──▶ SYSCLK = 168 MHz
 
 | Ref  | Componente              | Valor/Tipo        | Notas                |
 |------|-------------------------|-------------------|----------------------|
-| U1   | STM32F407VGT6           | LQFP100           | MCU principal        |
+| U1   | STM32F401VET6           | LQFP100           | MCU principal        |
 | Y1   | Cristal                 | 8 MHz             | 20pF load caps       |
 | Y2   | Cristal                 | 32.768 kHz        | 6.8pF load caps      |
 | C1-C2| Caps de cristal HSE     | 20pF              |                      |
@@ -149,7 +151,7 @@ HSE (8 MHz) ──▶ PLL ──▶ SYSCLK = 168 MHz
 
 ### Paso 1: Esquemático Mínimo del MCU
 1. Crear proyecto Proteus: `02-mcu-core/simulation/mcu_core.pdsprj`
-2. Colocar STM32F407VGT6
+2. Colocar STM32F401VET6
 3. Conectar cristal de 8 MHz con caps de carga (20pF)
 4. Conectar todos los pines VDD a 3.3V con bypass caps (100nF cada uno)
 5. Conectar todos los pines VSS a GND
@@ -158,8 +160,8 @@ HSE (8 MHz) ──▶ PLL ──▶ SYSCLK = 168 MHz
 8. **Test**: Verificar que el MCU arranca (LED heartbeat o debug UART)
 
 ### Paso 2: Configurar STM32CubeMX
-1. Crear proyecto CubeMX para STM32F407VGT6
-2. Configurar clocks: HSE 8MHz → PLL → 168MHz
+1. Crear proyecto CubeMX para STM32F401VET6
+2. Configurar clocks: HSE 8MHz → PLL → 84MHz
 3. Habilitar periféricos:
    - I2C1 (PB6/PB7) @ 400kHz
    - SPI1 (PA5/PA6/PA7) @ 8MHz
@@ -284,7 +286,7 @@ typedef struct {
 
 ## Criterios de Aceptación
 
-- [ ] MCU arranca correctamente a 168 MHz (verificar con osciloscopio en pin MCO)
+- [ ] MCU arranca correctamente a 84 MHz (verificar con osciloscopio en pin MCO)
 - [ ] FreeRTOS kernel inicia y todas las tareas se ejecutan
 - [ ] LED heartbeat a 1 Hz estable
 - [ ] Debug UART funcional (printf a Virtual Terminal)
@@ -319,8 +321,8 @@ typedef struct {
 
 ## Referencias
 
-- [STM32F407 Datasheet](https://www.st.com/resource/en/datasheet/stm32f407vg.pdf)
-- [STM32F407 Reference Manual](https://www.st.com/resource/en/reference_manual/dm00031020.pdf)
+- [STM32F401 Datasheet](https://www.st.com/resource/en/datasheet/stm32f401ve.pdf)
+- [STM32F401 Reference Manual](https://www.st.com/resource/en/reference_manual/dm00096844.pdf)
 - [FreeRTOS API Reference](https://www.freertos.org/a00106.html)
 - [FreeRTOS STM32 Port](https://www.freertos.org/RTOS-Cortex-M3-M4.html)
 

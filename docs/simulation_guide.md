@@ -77,7 +77,7 @@ Dependiendo del método de simulación elegido, hay varias estrategias:
 
 ```
 ┌──────────────────────┐        ┌──────────────────────┐
-│   Arduino/STM32      │  I2C   │    STM32F407         │
+│   Arduino/STM32      │  I2C   │    STM32F401         │
 │   "Sensor Faker"     │───────▶│    Flight Computer   │
 │                      │  UART  │                      │
 │  Lee CSV desde       │───────▶│  Lee datos como si   │
@@ -135,7 +135,7 @@ Proyecto Proteus (.pdsprj)
 ├── Design Sheet 1: Power Management
 │   └── Reguladores, INA219, LEDs
 ├── Design Sheet 2: MCU Core
-│   └── STM32F407, oscilador, reset, SWD
+│   └── STM32F401, oscilador, reset, SWD
 ├── Design Sheet 3: Sensors
 │   └── MPU6050, BMP280, pull-ups I2C
 ├── Design Sheet 4: GPS + Radio
