@@ -1,0 +1,79 @@
+# ============================================
+# Rocket Avionics Project - .gitignore
+# ============================================
+
+# ---- Proteus / EDA ----
+*.bak
+*.log
+*.DBK
+*.pdsbak
+*.PWI
+Last Loaded *.pdsprj
+*.hex.bak
+# Proteus temp/backup files
+Backup of *
+*.~*
+
+# ---- Build Outputs ----
+build/
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.d
+Debug/
+Release/
+
+# ---- STM32CubeIDE / Eclipse ----
+.settings/
+.cproject
+.project
+*.launch
+.metadata/
+
+# ---- VS Code ----
+.vscode/
+*.code-workspace
+
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.env
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+
+# ---- OS Files ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# ---- Large Data Files ----
+# Raw flight data can be large; keep only processed profiles in repo
+# Uncomment if you want to exclude raw data:
+# flight-data/raw/*.csv
+
+# ---- Simulation Results (regenerable) ----
+integration/full-system-simulation/results/
+integration/full-system-simulation/firmware/*.hex
+
+# ---- Temporary ----
+*.tmp
+*.swp
+*.swo
+*~

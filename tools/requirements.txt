@@ -1,0 +1,19 @@
+# Rocket Avionics - Python Dependencies
+# ======================================
+# Install: pip install -r requirements.txt
+
+# Core data processing
+numpy>=1.21.0
+pandas>=1.3.0
+
+# Visualization (optional, for data analysis)
+matplotlib>=3.4.0
+
+# Serial communication (for hardware testing)
+pyserial>=3.5
+
+# Flight data validation
+scipy>=1.7.0
+
+# CSV and data format handling
+openpyxl>=3.0.0
