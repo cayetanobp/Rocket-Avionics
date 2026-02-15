@@ -34,6 +34,8 @@ Este módulo proporciona alimentación regulada y monitorizada a todos los subsi
 | Ripple máximo      | 50 mV pico-pico          |
 | Carga principal    | Servos (4×, 500mA pico c/u) |
 
+TO-DO:
+
 ### Rail 3.3V (LDO)
 | Parámetro          | Valor                    |
 |--------------------|--------------------------|
