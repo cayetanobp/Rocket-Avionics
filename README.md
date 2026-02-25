@@ -1,12 +1,15 @@
-# 🚀 Rocket Avionics - Full Avionics Simulation Platform
+<h1 align="center">Rocket Avionics</h1>
 
 <p align="center">
   <img src="docs/assets/banner-placeholder.png" alt="Rocket Avionics Banner" width="800"/>
 </p>
 
 <p align="center">
-  <strong>Plataforma modular de aviónica para cohetes con simulación completa en Proteus VSM</strong>
+  <strong>Full Avionics Design</strong><br>
+  Plataforma modular de aviónica para cohetes con simulación completa en Proteus VSM
 </p>
+
+
 
 <p align="center">
   <a href="#módulos">Módulos</a> •
@@ -51,14 +54,14 @@
         └───┬───┘              │  FreeRTOS │            │ Monitor │
             │                  └─────┬─────┘            └─────────┘
             │                        │
-            │    ┌───────┬───────┬───┴───┬───────┬───────┐
-            │    │       │       │       │       │       │
-        ┌───▼┐ ┌─▼──┐ ┌─▼──┐ ┌─▼──┐ ┌──▼─┐ ┌──▼──┐ ┌──▼──┐
-        │Srv │ │IMU │ │BARO│ │GPS │ │LoRa│ │Flash│ │Diag │
-        │PWM │ │I2C │ │I2C │ │UART│ │SPI │ │SPI  │ │UART │
-        └────┘ └──┬─┘ └──┬─┘ └──┬─┘ └──┬─┘ └──┬──┘ └──┬──┘
-                  │      │      │      │      │       │
-                  └──────┴──────┴──────┴──────┴───────┘
+            │    ┌───────┬───────┬───┴───┬─────┬───────┐
+            │    │       │       │       │     │       │
+        ┌───▼┐ ┌─▼──┐ ┌─▼──┐  ┌─▼──┐ ┌──▼─┐ ┌──▼──┐ ┌──▼──┐
+        │Srv │ │IMU │ │BARO│  │GPS │ │LoRa│ │Flash│ │Diag │
+        │PWM │ │I2C │ │I2C │  │UART│ │SPI │ │SPI  │ │UART │
+        └────┘ └──┬─┘ └──┬─┘  └──┬─┘ └──┬─┘ └──┬──┘ └──┬──┘
+                  │      │       │      │      │       │
+                  └──────┴───────┴──────┴──────┴───────┘
                                      │
                         ┌────────────▼────────────┐
                         │     STATE MACHINE       │
@@ -77,7 +80,7 @@
 | Bus   | Dispositivos                              | Velocidad     |
 |-------|-------------------------------------------|---------------|
 | I2C1  | MPU6050, BMP280, INA219                   | 400 kHz       |
-| SPI1  | W25Q128 Flash, RFM95W LoRa               | 8 MHz         |
+| SPI1  | W25Q128 Flash, RFM95W LoRa                | 8 MHz         |
 | UART1 | NEO-6M GPS                                | 9600 baud     |
 | UART2 | Debug Terminal                            | 115200 baud   |
 | PWM   | Servos (TIM2/TIM3)                        | 50 Hz         |
@@ -89,12 +92,12 @@
 
 | #  | Módulo                  | Descripción                                  | Estado |
 |----|-------------------------|----------------------------------------------|--------|
-| 01 | [Power Management](01-power-management/)    | Regulación, monitorización y protección      | 🟡     |
-| 02 | [MCU Core](02-mcu-core/)                    | STM32F4 + FreeRTOS, cerebro del sistema      | 🔴     |
+| 01 | [Power Management](01-power-management/)    | Regulación, monitorización y protección       | 🟡     |
+| 02 | [MCU Core](02-mcu-core/)                    | STM32F4 + FreeRTOS, cerebro del sistema       | 🔴     |
 | 03 | [Sensors Interface](03-sensors/)             | Abstracción I2C/SPI, detección automática    | 🔴     |
 | 04 | [IMU Navigation](04-imu-navigation/)         | MPU6050 + Madgwick, orientación 3D           | 🔴     |
-| 05 | [Barometer Altimeter](05-barometer-altimeter/)| BMP280, altitud + detección de apogeo        | 🔴     |
-| 06 | [GNSS GPS](06-gnss-gps/)                    | NEO-6M, posicionamiento + recovery           | 🔴     |
+| 05 | [Barometer Altimeter](05-barometer-altimeter/)| BMP280, altitud + detección de apogeo       | 🔴     |
+| 06 | [GNSS GPS](06-gnss-gps/)                    | NEO-6M, posicionamiento + recovery            | 🔴     |
 | 07 | [Telemetry Radio](07-telemetry-radio/)       | LoRa RFM95W, downlink en tiempo real         | 🔴     |
 | 08 | [Data Logging](08-data-logging/)             | Flash SPI W25Q128, 100Hz+ logging            | 🔴     |
 | 09 | [Recovery System](09-recovery-system/)       | Pyro channels, dual deploy                   | 🔴     |
