@@ -89,7 +89,7 @@
 
 | #  | Módulo                  | Descripción                                  | Estado |
 |----|-------------------------|----------------------------------------------|--------|
-| 01 | [Power Management](01-power-management/)    | Regulación, monitorización y protección      | 🔴     |
+| 01 | [Power Management](01-power-management/)    | Regulación, monitorización y protección      | 🟡     |
 | 02 | [MCU Core](02-mcu-core/)                    | STM32F4 + FreeRTOS, cerebro del sistema      | 🔴     |
 | 03 | [Sensors Interface](03-sensors/)             | Abstracción I2C/SPI, detección automática    | 🔴     |
 | 04 | [IMU Navigation](04-imu-navigation/)         | MPU6050 + Madgwick, orientación 3D           | 🔴     |
